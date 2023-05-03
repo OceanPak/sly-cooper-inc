@@ -7,9 +7,9 @@ import java.util.Scanner;
 
 public class VRPInstance {
   // VRP Input Parameters
-  int numCustomers;        		// the number of customers	   
-  int numVehicles;           	// the number of vehicles
-  int vehicleCapacity;			// the capacity of the vehicles
+  public int numCustomers;        		// the number of customers	   
+  public int numVehicles;           	// the number of vehicles
+  public int vehicleCapacity;			// the capacity of the vehicles
 
   public int[] demandOfCustomer;		// the demand of each customer
   public double[] xCoordOfCustomer;	// the x coordinate of each customer
