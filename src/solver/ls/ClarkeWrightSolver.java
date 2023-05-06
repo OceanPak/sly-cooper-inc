@@ -24,7 +24,8 @@ public class ClarkeWrightSolver {
             for (int customer2 = customer1 + 1; customer2 < instance.numCustomers; customer2++) {
                 savings[pairIndex] = new PointPair(customer1, customer2,
                         instance.xCoordOfCustomer[customer1], instance.yCoordOfCustomer[customer1],
-                        instance.xCoordOfCustomer[customer2], instance.yCoordOfCustomer[customer2]);
+                        instance.xCoordOfCustomer[customer2], instance.yCoordOfCustomer[customer2], 
+                        instance.depotXCoordinate, instance.depotYCoordinate);
                 pairIndex += 1;
             }
         }
@@ -32,7 +33,6 @@ public class ClarkeWrightSolver {
     }
 
     public HashSet<Tour> solve() {
-        System.out.println("savings list");
         for (int i = 0; i < this.savings.length; i++) {
             PointPair nextBestSaving = this.savings[i];
 
@@ -129,11 +129,11 @@ class PointPair implements Comparable<PointPair> {
     public int secondPointName = 0;
     public double savings = 0;
 
-    public PointPair(int firstName, int secondName, double xfirst, double yfirst, double xsecond, double ysecond) {
+    public PointPair(int firstName, int secondName, double xfirst, double yfirst, double xsecond, double ysecond, double xdepot, double ydepot) {
         this.firstPointName = firstName;
         this.secondPointName = secondName;
-        double distanceFromDepotToFirst = distSq(0, 0, xfirst, yfirst);
-        double distanceFromDepotToSecond = distSq(0, 0, xsecond, ysecond);
+        double distanceFromDepotToFirst = distSq(xdepot, ydepot, xfirst, yfirst);
+        double distanceFromDepotToSecond = distSq(xdepot, ydepot, xsecond, ysecond);
         double distanceFromFirstToSecond = distSq(xfirst, yfirst, xsecond, ysecond);
         this.savings = distanceFromDepotToFirst + distanceFromDepotToSecond - distanceFromFirstToSecond;
     }
@@ -223,12 +223,20 @@ class Tour {
 
         distance += Math.sqrt(PointPair.distSq(
                 instance.xCoordOfCustomer[lastStop], instance.yCoordOfCustomer[lastStop],
-                0, 0));
+                instance.depotXCoordinate, instance.depotYCoordinate));
 
         distance += Math.sqrt(PointPair.distSq(
                 instance.xCoordOfCustomer[firstStop], instance.yCoordOfCustomer[firstStop],
-                0, 0));
+                instance.depotXCoordinate, instance.depotYCoordinate));
 
         return distance;
+    }
+
+    public String toString() {
+        String s = "";
+        for (Integer i : customers) {
+            s += i + " ";
+        }
+        return s;
     }
 }

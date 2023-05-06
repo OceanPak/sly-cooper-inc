@@ -11,6 +11,9 @@ public class VRPInstance {
   public int numVehicles;           	// the number of vehicles
   public int vehicleCapacity;			// the capacity of the vehicles
 
+  public double depotXCoordinate;
+  public double depotYCoordinate;
+
   public int[] demandOfCustomer;		// the demand of each customer
   public double[] xCoordOfCustomer;	// the x coordinate of each customer
   public double[] yCoordOfCustomer;	// the y coordinate of each customer
@@ -24,24 +27,30 @@ public class VRPInstance {
       System.exit(-1);
     }
 
-    numCustomers = read.nextInt(); 
+    numCustomers = read.nextInt() - 1; 
     numVehicles = read.nextInt();
     vehicleCapacity = read.nextInt();
     
     System.out.println("Number of customers: " + numCustomers);
     System.out.println("Number of vehicles: " + numVehicles);
     System.out.println("Vehicle capacity: " + vehicleCapacity);
-      
-    demandOfCustomer = new int[numCustomers];
+
+    demandOfCustomer = new int[numCustomers]; //First customer is actually the depot
 	  xCoordOfCustomer = new double[numCustomers];
 	  yCoordOfCustomer = new double[numCustomers];
-	
+
+    // Handle Depot 'demand' and location
+    read.nextInt();
+    depotXCoordinate = read.nextDouble();
+    depotYCoordinate = read.nextDouble();
+
     for (int i = 0; i < numCustomers; i++) {
 		  demandOfCustomer[i] = read.nextInt();
 		  xCoordOfCustomer[i] = read.nextDouble();
 		  yCoordOfCustomer[i] = read.nextDouble();
     }
 	
+    System.out.println(depotXCoordinate + " " + depotYCoordinate);
     for (int i = 0; i < numCustomers; i++)
       System.out.println(demandOfCustomer[i] + " " + xCoordOfCustomer[i] + " " + yCoordOfCustomer[i]);
   }

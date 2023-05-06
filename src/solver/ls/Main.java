@@ -8,6 +8,8 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.HashSet;
+import java.util.Iterator;
+import java.util.ArrayList;
 
 public class Main {
 	public static void main(String[] args) throws IOException {
@@ -28,16 +30,26 @@ public class Main {
 		// ***** Clarke Wright Solver *****
 		ClarkeWrightSolver s = new ClarkeWrightSolver(instance);
 		HashSet<Tour> tours = s.solve();
+		ArrayList<Tour> modifiedTours = new ArrayList<>();
 
 		if (tours.size() > instance.numVehicles) {
-			System.out.printf("Problem! Clarke Wright gave us %d vehicles, but %d is the max\n",
+			System.out.printf("Problem! For instance " + input + ", Clarke Wright gave us %d vehicles, but %d is the max\n",
 					tours.size(), instance.numVehicles);
 			return;
 		}
 
+		// Perform 2 Opt Swap
+		Iterator<Tour> iter = tours.iterator();
+		TwoOptSwap twoopt = new TwoOptSwap();
+        while (iter.hasNext()) {
+			Tour t = iter.next();
+			t = twoopt.checkForSwaps(t, instance);
+			modifiedTours.add(t);
+        }
+
 		// Java streams was being annoying, did the naive solution
 		int totalDistance = 0;
-		for (Tour t : tours)
+		for (Tour t : modifiedTours)
 			totalDistance += t.getTotalDistance(instance);
 
 		File yourFile = new File("output.txt");
@@ -45,7 +57,7 @@ public class Main {
 		FileWriter writer = new FileWriter(yourFile);
 
 		writer.write(totalDistance + " 0\n");
-		for (Tour t : tours) {
+		for (Tour t : modifiedTours) {
 			String pathString = t.customers.stream().reduce(
 					"",
 					(partialPath, customer) -> partialPath + " " + customer.toString(),
@@ -60,7 +72,7 @@ public class Main {
 
 		System.out.println("{\"Instance\": \"" + filename +
 				"\", \"Time\": " + String.format("%.2f", watch.getTime()) +
-				", \"Result\": \"--\"" +
+				", \"Result\": " + totalDistance +
 				", \"Solution\": \"--\"}");
 	}
 }
