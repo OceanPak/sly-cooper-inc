@@ -6,6 +6,8 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.ArrayList;
 
+//Keep in mind: the indexes of the customers here are off by 1 since the depot is actually
+//a customer in the problem specification (but we removed it from the customer list)
 public class ClarkeWrightSolver {
 
     VRPInstance instance;
@@ -18,6 +20,7 @@ public class ClarkeWrightSolver {
     public ClarkeWrightSolver(VRPInstance instance) {
         this.instance = instance;
         // number of distinct pairs
+
         this.savings = new PointPair[((instance.numCustomers) * (instance.numCustomers - 1)) / 2];
         int pairIndex = 0;
         for (int customer1 = 0; customer1 < instance.numCustomers - 1; customer1++) {
@@ -230,13 +233,5 @@ class Tour {
                 instance.depotXCoordinate, instance.depotYCoordinate));
 
         return distance;
-    }
-
-    public String toString() {
-        String s = "";
-        for (Integer i : customers) {
-            s += i + " ";
-        }
-        return s;
     }
 }

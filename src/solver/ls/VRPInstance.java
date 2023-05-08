@@ -20,6 +20,7 @@ public class VRPInstance {
   
   public VRPInstance(String fileName) {
     Scanner read = null;
+    
     try {
       read = new Scanner(new File(fileName));
     } catch (FileNotFoundException e) {
@@ -27,7 +28,7 @@ public class VRPInstance {
       System.exit(-1);
     }
 
-    numCustomers = read.nextInt() - 1; 
+    numCustomers = read.nextInt() - 1;  //First customer is actually the depot
     numVehicles = read.nextInt();
     vehicleCapacity = read.nextInt();
     
@@ -35,7 +36,7 @@ public class VRPInstance {
     System.out.println("Number of vehicles: " + numVehicles);
     System.out.println("Vehicle capacity: " + vehicleCapacity);
 
-    demandOfCustomer = new int[numCustomers]; //First customer is actually the depot
+    demandOfCustomer = new int[numCustomers]; 
 	  xCoordOfCustomer = new double[numCustomers];
 	  yCoordOfCustomer = new double[numCustomers];
 
@@ -49,9 +50,5 @@ public class VRPInstance {
 		  xCoordOfCustomer[i] = read.nextDouble();
 		  yCoordOfCustomer[i] = read.nextDouble();
     }
-	
-    System.out.println(depotXCoordinate + " " + depotYCoordinate);
-    for (int i = 0; i < numCustomers; i++)
-      System.out.println(demandOfCustomer[i] + " " + xCoordOfCustomer[i] + " " + yCoordOfCustomer[i]);
   }
 }

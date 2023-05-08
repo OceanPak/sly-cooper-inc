@@ -1,8 +1,6 @@
 package solver.ls;
 
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Path;
@@ -27,7 +25,7 @@ public class Main {
 		watch.start();
 		VRPInstance instance = new VRPInstance(input);
 
-		// ***** Clarke Wright Solver *****
+		// *************** Clarke Wright Solver ********************
 		ClarkeWrightSolver s = new ClarkeWrightSolver(instance);
 		HashSet<Tour> tours = s.solve();
 		ArrayList<Tour> modifiedTours = new ArrayList<>();
@@ -60,14 +58,15 @@ public class Main {
 		for (Tour t : modifiedTours) {
 			String pathString = t.customers.stream().reduce(
 					"",
-					(partialPath, customer) -> partialPath + " " + customer.toString(),
+					//Adding +1 because customer indexes are off by 1; check ClarkeWrightSolver.java for more info
+					(partialPath, customer) -> partialPath + " " + (customer + 1),
 					String::concat);
 			writer.write("0" + pathString + " 0\n");
 		}
 
 		writer.close();
 
-		// ***** ***** ***** ***** *****
+		// ***** ***** ***** ***** ***** ***** *****
 		watch.stop();
 
 		System.out.println("{\"Instance\": \"" + filename +

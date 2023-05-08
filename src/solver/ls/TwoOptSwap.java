@@ -5,18 +5,9 @@ import java.util.ArrayList;
 
 public class TwoOptSwap {
 
-    public Tour checkForSwaps(Tour t, VRPInstance instance) {
-        double currentDistance = 0;
-        for (int i = 0; i < t.customers.size() - 1; i++) {
-            currentDistance += PointPair.distSq(
-                    instance.xCoordOfCustomer[t.customers.get(i)], instance.yCoordOfCustomer[t.customers.get(i)],
-                    instance.xCoordOfCustomer[t.customers.get(i + 1)], instance.yCoordOfCustomer[t.customers.get(i + 1)]);
-        }
-        System.out.println("previous distance");
-        System.out.println(currentDistance);
-        
-        boolean foundImprovement = true;
-        while (foundImprovement) {
+    public Tour checkForSwaps(Tour t, VRPInstance instance) {        
+        boolean foundImprovement;
+        do {
             foundImprovement = false;
             for (int i = 0; i < t.customers.size() - 1; i++) {
                 for (int j = i + 1; j < t.customers.size() - 1; j++) {
@@ -36,21 +27,12 @@ public class TwoOptSwap {
 
                     if (lengthDelta < 0) {
                         t = swap(t, i, j);
-                        currentDistance += lengthDelta;
                         foundImprovement = true;
                     }
                 }
             }
-        }
-        
-        double newDistance = 0;
-        for (int i = 0; i < t.customers.size() - 1; i++) {
-            newDistance += PointPair.distSq(
-                    instance.xCoordOfCustomer[t.customers.get(i)], instance.yCoordOfCustomer[t.customers.get(i)],
-                    instance.xCoordOfCustomer[t.customers.get(i + 1)], instance.yCoordOfCustomer[t.customers.get(i + 1)]);
-        }
-        System.out.println("new distance");
-        System.out.println(newDistance);
+        } while (foundImprovement);
+
         return t;
     }
 
