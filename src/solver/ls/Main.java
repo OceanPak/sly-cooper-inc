@@ -3,6 +3,7 @@ package solver.ls;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.HashSet;
@@ -27,38 +28,40 @@ public class Main {
 
 		// *************** Clarke Wright Solver ********************
 		ClarkeWrightSolver s = new ClarkeWrightSolver(instance);
-		HashSet<Tour> tours = s.solve();
-		ArrayList<Tour> modifiedTours = new ArrayList<>();
+		HashSet<ClarkeWrightTour> tours = s.solve();
 
 		if (tours.size() > instance.numVehicles) {
-			System.out.printf("Problem! For instance " + input + ", Clarke Wright gave us %d vehicles, but %d is the max\n",
+			System.out.printf(
+					"Problem! For instance " + input + ", Clarke Wright gave us %d vehicles, but %d is the max\n",
 					tours.size(), instance.numVehicles);
-			return;
 		}
 
 		// Perform 2 Opt Swap
-		Iterator<Tour> iter = tours.iterator();
-		TwoOptSwap twoopt = new TwoOptSwap();
-        while (iter.hasNext()) {
-			Tour t = iter.next();
-			t = twoopt.checkForSwaps(t, instance);
-			modifiedTours.add(t);
-        }
+		Iterator<ClarkeWrightTour> iter = tours.iterator();
+		while (iter.hasNext()) {
+			ClarkeWrightTour t = iter.next();
+			TwoOptSwap.checkForSwaps(t, instance);
+		}
+		//InterTourTwoOptSwap.checkForSwaps(new ArrayList<>(tours), instance);
+
 
 		// Java streams was being annoying, did the naive solution
 		int totalDistance = 0;
-		for (Tour t : modifiedTours)
+		for (ClarkeWrightTour t : tours)
 			totalDistance += t.getTotalDistance(instance);
 
-		File yourFile = new File("output.txt");
+		Files.createDirectories(Paths.get("./solver_outputs/"));
+		File yourFile = new File("./solver_outputs/" + filename + "output.txt");
+		System.out.println(yourFile.getAbsolutePath());
 		yourFile.createNewFile(); // if file already exists will do nothing
 		FileWriter writer = new FileWriter(yourFile);
 
 		writer.write(totalDistance + " 0\n");
-		for (Tour t : modifiedTours) {
+		for (ClarkeWrightTour t : tours) {
 			String pathString = t.customers.stream().reduce(
 					"",
-					//Adding +1 because customer indexes are off by 1; check ClarkeWrightSolver.java for more info
+					// Adding +1 because customer indexes are off by 1; check
+					// ClarkeWrightSolver.java for more info
 					(partialPath, customer) -> partialPath + " " + (customer + 1),
 					String::concat);
 			writer.write("0" + pathString + " 0\n");
