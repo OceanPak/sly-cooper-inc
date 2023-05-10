@@ -64,12 +64,17 @@ class ClarkeWrightTour {
         float distance = 0;
 
         for (int i = 1; i < customers.size(); i++) {
-            distance += Math.sqrt(PointPair.customerDistSq(customers.get(i), customers.get(i-1), instance));
+            distance += PointPair.customerDist(customers.get(i), customers.get(i-1), instance);
         }
 
-        distance += Math.sqrt(PointPair.customerDepoDistSq(lastStop, instance));
-        distance += Math.sqrt(PointPair.customerDepoDistSq(firstStop, instance));
+        distance += PointPair.customerDepotDist(lastStop, instance);
+        distance += PointPair.customerDepotDist(firstStop, instance);
     
         return distance;
+    }
+
+    public int getPartialDemand(int startIndexIncl, int endIndexExcl, VRPInstance i){
+        return customers.subList(startIndexIncl, endIndexExcl).stream().reduce
+        (0, (partialSum, customer) -> partialSum + i.demandOfCustomer[customer]);
     }
 }

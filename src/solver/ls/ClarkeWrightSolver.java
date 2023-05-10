@@ -6,7 +6,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 
 //Keep in mind: the indexes of the customers here are off by 1 since the depot is actually
-//a customer in the problem specification (but we removed it from the customer list)
+//a customer in the problem specification files (but we removed it from the customer list while parsing)
 public class ClarkeWrightSolver {
 
     VRPInstance instance;
@@ -29,15 +29,18 @@ public class ClarkeWrightSolver {
             }
         }
         Arrays.sort(this.savings, Comparator.reverseOrder());
-        System.out.println(Arrays.deepToString(savings));
+        //System.out.println(Arrays.deepToString(savings));
     }
 
     public HashSet<ClarkeWrightTour> solve() {
         for (int i = 0; i < this.savings.length; i++) {
             PointPair nextBestSaving = this.savings[i];
 
-            int customer1 = nextBestSaving.firstPointName;
-            int customer2 = nextBestSaving.secondPointName;
+            //Necessary since these pairs aren't actually sorted in order of savings
+            if (nextBestSaving.savings < 0) continue;
+
+            int customer1 = nextBestSaving.firstCustomer;
+            int customer2 = nextBestSaving.secondCustomer;
 
             boolean customer1HasTour = tours.containsKey(customer1);
             boolean customer2HasTour = tours.containsKey(customer2);

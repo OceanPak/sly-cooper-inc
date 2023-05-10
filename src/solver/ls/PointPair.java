@@ -1,20 +1,20 @@
 package solver.ls;
 
 class PointPair implements Comparable<PointPair> {
-    public int firstPointName = 0;
-    public int secondPointName = 0;
-    public double savings = 0;
+    public int firstCustomer;
+    public int secondCustomer;
+    public double savings;
     public int combinedDemand;
     public int thresholdDemand;
 
-    public PointPair(int firstName, int secondName, VRPInstance i) {
-        this.firstPointName = firstName;
-        this.secondPointName = secondName;
-        this.combinedDemand = (i.demandOfCustomer[firstName] + i.demandOfCustomer[secondName]);
-        this.thresholdDemand = Math.round(i.vehicleCapacity * 0.7f);
-        double distanceFromDepotToFirst = customerDepoDistSq(firstName, i);
-        double distanceFromDepotToSecond = customerDepoDistSq(secondName, i);
-        double distanceFromFirstToSecond = customerDistSq(firstName, secondName, i);
+    public PointPair(int customer1, int customer2, VRPInstance i) {
+        this.firstCustomer = customer1;
+        this.secondCustomer = customer2;
+        this.combinedDemand = (i.demandOfCustomer[customer1] + i.demandOfCustomer[customer2]);
+        this.thresholdDemand = Math.round(i.vehicleCapacity * 0.5f);
+        double distanceFromDepotToFirst = customerDepotDistSq(customer1, i);
+        double distanceFromDepotToSecond = customerDepotDistSq(customer2, i);
+        double distanceFromFirstToSecond = customerDistSq(customer1, customer2, i);
         this.savings = distanceFromDepotToFirst + distanceFromDepotToSecond - distanceFromFirstToSecond;
     }
 
@@ -43,18 +43,27 @@ class PointPair implements Comparable<PointPair> {
         }
     }
 
-    // TODO: could potentially be more accurate with square root
     static public double customerDistSq(int c1, int c2, VRPInstance i) {
-        return Math.pow(i.xCoordOfCustomer[c1] - i.xCoordOfCustomer[c2], 2) + Math.pow(i.yCoordOfCustomer[c1] - i.yCoordOfCustomer[c2], 2);
+        return Math.pow(i.xCoordOfCustomer[c1] - i.xCoordOfCustomer[c2], 2)
+                + Math.pow(i.yCoordOfCustomer[c1] - i.yCoordOfCustomer[c2], 2);
     }
 
-    static public double customerDepoDistSq(int c1, VRPInstance i) {
-        return Math.pow(i.depotXCoordinate - i.xCoordOfCustomer[c1], 2) + Math.pow(i.depotYCoordinate - i.yCoordOfCustomer[c1], 2);
+    static public double customerDepotDistSq(int c1, VRPInstance i) {
+        return Math.pow(i.depotXCoordinate - i.xCoordOfCustomer[c1], 2)
+                + Math.pow(i.depotYCoordinate - i.yCoordOfCustomer[c1], 2);
     }
 
+    static public double customerDist(int c1, int c2, VRPInstance i) {
+        return Math.sqrt(PointPair.customerDistSq(c1, c2, i));
+
+    }
+
+    static public double customerDepotDist(int c1, VRPInstance i) {
+        return Math.sqrt(PointPair.customerDepotDistSq(c1, i));
+    }
 
     @Override
     public String toString() {
-        return firstPointName + " " + secondPointName;
+        return String.format("%d-%d (%d, %.1f)", firstCustomer + 1, secondCustomer + 1, combinedDemand, savings);
     }
 }

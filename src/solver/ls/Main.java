@@ -6,9 +6,9 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.ArrayList;
 
 public class Main {
 	public static void main(String[] args) throws IOException {
@@ -42,8 +42,15 @@ public class Main {
 			ClarkeWrightTour t = iter.next();
 			TwoOptSwap.checkForSwaps(t, instance);
 		}
-		//InterTourTwoOptSwap.checkForSwaps(new ArrayList<>(tours), instance);
 
+		// Perform inter-tour 2 opt swap (then 2 Opt Swap to clean up any changes)
+		InterTourTwoOptSwap.checkForSwaps(new ArrayList<>(tours), instance);
+
+		iter = tours.iterator();
+		while (iter.hasNext()) {
+			ClarkeWrightTour t = iter.next();
+			TwoOptSwap.checkForSwaps(t, instance);
+		}
 
 		// Java streams was being annoying, did the naive solution
 		int totalDistance = 0;
