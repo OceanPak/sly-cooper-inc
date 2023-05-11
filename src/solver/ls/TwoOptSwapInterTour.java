@@ -2,19 +2,18 @@ package solver.ls;
 
 import java.util.ArrayList;
 
-public class InterTourTwoOptSwap {
+public class TwoOptSwapInterTour {
 
-  public static void checkForSwaps(ArrayList<ClarkeWrightTour> tours, VRPInstance i) {
+  public static void checkForSwaps(ArrayList<VehicleTour> tours, VRPInstance i) {
     boolean foundImprovement;
 
-    
     do {
       foundImprovement = false;
 
       for (int subjectTourIndex = 0; subjectTourIndex < tours.size() - 1; subjectTourIndex++) {
-        ClarkeWrightTour subjectTour = tours.get(subjectTourIndex);
+        VehicleTour subjectTour = tours.get(subjectTourIndex);
         for (int targetTourIndex = subjectTourIndex + 1; targetTourIndex < tours.size() - 1; targetTourIndex++) {
-          ClarkeWrightTour targetTour = tours.get(targetTourIndex);
+          VehicleTour targetTour = tours.get(targetTourIndex);
 
           // Ignore the nodes that are next to the depot
           boolean swapJustHappened = false;
@@ -46,16 +45,16 @@ public class InterTourTwoOptSwap {
               // If we're changing swapping B and E in two tours A - B - C and D - E - F,
               // We have to check that all the change in distances is worth it
 
-              double lengthOfUnchangedTour1 = PointPair.customerDist(subjectTour.customers.get(subjectCustomerIndx - 1),
+              double lengthOfUnchangedTour1 = ClarkeWrightPointPair.customerDist(subjectTour.customers.get(subjectCustomerIndx - 1),
                   subjectTour.customers.get(subjectCustomerIndx), i);
 
-              double lengthOfUnchangedTour2 = PointPair.customerDist(targetTour.customers.get(targetCustomerIndx - 1),
+              double lengthOfUnchangedTour2 = ClarkeWrightPointPair.customerDist(targetTour.customers.get(targetCustomerIndx - 1),
                   targetTour.customers.get(targetCustomerIndx), i);
 
-              double lengthOfChangedTour1 = PointPair.customerDist(subjectTour.customers.get(subjectCustomerIndx - 1),
+              double lengthOfChangedTour1 = ClarkeWrightPointPair.customerDist(subjectTour.customers.get(subjectCustomerIndx - 1),
                   targetTour.customers.get(targetCustomerIndx), i);
 
-              double lengthOfChangedTour2 = PointPair.customerDist(targetTour.customers.get(targetCustomerIndx - 1),
+              double lengthOfChangedTour2 = ClarkeWrightPointPair.customerDist(targetTour.customers.get(targetCustomerIndx - 1),
                   subjectTour.customers.get(subjectCustomerIndx), i);
 
               double lengthDelta = -lengthOfUnchangedTour1 - lengthOfUnchangedTour2 + lengthOfChangedTour1
@@ -76,7 +75,7 @@ public class InterTourTwoOptSwap {
 
   }
 
-  public static void swap(ClarkeWrightTour t1, ClarkeWrightTour t2, int t1Node, int t2Node) {
+  public static void swap(VehicleTour t1, VehicleTour t2, int t1Node, int t2Node) {
     int indexOfT1Node = t1.customers.indexOf(t1Node);
     int indexOfT2Node = t2.customers.indexOf(t2Node);
 

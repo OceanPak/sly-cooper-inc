@@ -13,18 +13,18 @@ public class ClarkeWrightSolver {
 
     // Indexed by customer, if two customers have the same route then their values
     // in this dict will be references to the same Tour
-    HashMap<Integer, ClarkeWrightTour> tours = new HashMap<Integer, ClarkeWrightTour>();
-    PointPair[] savings;
+    HashMap<Integer, VehicleTour> tours = new HashMap<Integer, VehicleTour>();
+    ClarkeWrightPointPair[] savings;
 
     public ClarkeWrightSolver(VRPInstance instance) {
         this.instance = instance;
         // number of distinct pairs
 
-        this.savings = new PointPair[((instance.numCustomers) * (instance.numCustomers - 1)) / 2];
+        this.savings = new ClarkeWrightPointPair[((instance.numCustomers) * (instance.numCustomers - 1)) / 2];
         int pairIndex = 0;
         for (int customer1 = 0; customer1 < instance.numCustomers - 1; customer1++) {
             for (int customer2 = customer1 + 1; customer2 < instance.numCustomers; customer2++) {
-                savings[pairIndex] = new PointPair(customer1, customer2, instance);
+                savings[pairIndex] = new ClarkeWrightPointPair(customer1, customer2, instance);
                 pairIndex += 1;
             }
         }
@@ -32,9 +32,9 @@ public class ClarkeWrightSolver {
         //System.out.println(Arrays.deepToString(savings));
     }
 
-    public HashSet<ClarkeWrightTour> solve() {
+    public HashSet<VehicleTour> solve() {
         for (int i = 0; i < this.savings.length; i++) {
-            PointPair nextBestSaving = this.savings[i];
+            ClarkeWrightPointPair nextBestSaving = this.savings[i];
 
             //Necessary since these pairs aren't actually sorted in order of savings
             if (nextBestSaving.savings < 0) continue;
@@ -48,7 +48,7 @@ public class ClarkeWrightSolver {
             // Case 1: Neither i nor j have already been assigned to a route, in which case
             // a new route is initiated including both i and j.
             if (!customer1HasTour && !customer2HasTour) {
-                ClarkeWrightTour newTour = new ClarkeWrightTour();
+                VehicleTour newTour = new VehicleTour();
                 // check if adding two new customer demands will exceed vehicle capacity, skip
                 // if it is the case
                 if (instance.demandOfCustomer[customer1]
@@ -66,7 +66,7 @@ public class ClarkeWrightSolver {
             // Case 2: exactly one of the two points (i or j) has already been included in
             // an existing route and that point is not interior to that route
             if (customer1HasTour && !customer2HasTour) {
-                ClarkeWrightTour tour = tours.get(customer1);
+                VehicleTour tour = tours.get(customer1);
                 // if the point in the tour is interior, we skip
                 if (!tour.isExteriorStop(customer1)) {
                     continue;
@@ -80,7 +80,7 @@ public class ClarkeWrightSolver {
             }
 
             if (customer2HasTour && !customer1HasTour) {
-                ClarkeWrightTour tour = tours.get(customer2);
+                VehicleTour tour = tours.get(customer2);
                 // if the point in the tour is interior, we skip
                 if (!tour.isExteriorStop(customer2)) {
                     continue;
@@ -97,8 +97,8 @@ public class ClarkeWrightSolver {
             // routes and neither point is interior to its route,
             // in which case the two routes are merged
             if (customer1HasTour && customer2HasTour) {
-                ClarkeWrightTour t1 = tours.get(customer1);
-                ClarkeWrightTour t2 = tours.get(customer2);
+                VehicleTour t1 = tours.get(customer1);
+                VehicleTour t2 = tours.get(customer2);
                 // check if the two tours are the same, or if either stop is interior
                 if (t1 == t2 || !t1.isExteriorStop(customer1) || !t2.isExteriorStop(customer2)) {
                     continue;
@@ -107,7 +107,7 @@ public class ClarkeWrightSolver {
                 if (t1.totalDemand + t2.totalDemand > instance.vehicleCapacity) {
                     continue;
                 }
-                ClarkeWrightTour newTour = ClarkeWrightTour.merge(t1, customer1, t2, customer2);
+                VehicleTour newTour = VehicleTour.merge(t1, customer1, t2, customer2);
                 for (int customer : newTour.customers) {
                     tours.put(customer, newTour);
                 }
@@ -117,13 +117,13 @@ public class ClarkeWrightSolver {
         // handle individual stops that have no tours (roundtrip to that one point)
         for (int customer = 0; customer < instance.numCustomers; customer++) {
             if (!tours.containsKey(customer)) {
-                ClarkeWrightTour newTour = new ClarkeWrightTour();
+                VehicleTour newTour = new VehicleTour();
                 newTour.appendCustomer(customer, instance.demandOfCustomer[customer]);
                 tours.put(customer, newTour);
             }
         }
 
         // Flatten our tours map into a set of tours....
-        return new HashSet<ClarkeWrightTour>(tours.values());
+        return new HashSet<VehicleTour>(tours.values());
     }
 }

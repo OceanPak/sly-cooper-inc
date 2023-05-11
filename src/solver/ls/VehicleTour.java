@@ -3,7 +3,7 @@ package solver.ls;
 import java.util.ArrayList;
 import java.util.Collections;
 
-class ClarkeWrightTour {
+class VehicleTour {
     public ArrayList<Integer> customers = new ArrayList<>();
     public int totalDemand = 0;
     public int lastStop = 0;
@@ -29,8 +29,8 @@ class ClarkeWrightTour {
     }
 
     // Assumes both are exterior customers
-    static ClarkeWrightTour merge(ClarkeWrightTour tour1, int tour1AnchorCustomer, ClarkeWrightTour tour2, int tour2AnchorCustomer) {
-        ClarkeWrightTour newTour;
+    static VehicleTour merge(VehicleTour tour1, int tour1AnchorCustomer, VehicleTour tour2, int tour2AnchorCustomer) {
+        VehicleTour newTour;
 
         if (tour1AnchorCustomer == tour1.firstStop && tour2AnchorCustomer == tour2.firstStop) {
             newTour = tour1;
@@ -64,11 +64,11 @@ class ClarkeWrightTour {
         float distance = 0;
 
         for (int i = 1; i < customers.size(); i++) {
-            distance += PointPair.customerDist(customers.get(i), customers.get(i-1), instance);
+            distance += ClarkeWrightPointPair.customerDist(customers.get(i), customers.get(i-1), instance);
         }
 
-        distance += PointPair.customerDepotDist(lastStop, instance);
-        distance += PointPair.customerDepotDist(firstStop, instance);
+        distance += ClarkeWrightPointPair.customerDepotDist(lastStop, instance);
+        distance += ClarkeWrightPointPair.customerDepotDist(firstStop, instance);
     
         return distance;
     }

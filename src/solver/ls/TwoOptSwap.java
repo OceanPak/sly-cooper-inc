@@ -6,16 +6,16 @@ import java.util.ArrayList;
 
 public class TwoOptSwap {
 
-    public static void checkForSwaps(ClarkeWrightTour t, VRPInstance instance) {        
+    public static void checkForSwaps(VehicleTour t, VRPInstance instance) {        
         boolean foundImprovement;
         do {
             foundImprovement = false;
             for (int i = 0; i < t.customers.size() - 1; i++) {
                 for (int j = i + 1; j < t.customers.size() - 1; j++) {
-                    double lengthOfUnchangedEdge1 = PointPair.customerDistSq(t.customers.get(i), t.customers.get(i + 1), instance);
-                    double lengthOfUnchangedEdge2 = PointPair.customerDistSq(t.customers.get(j), t.customers.get(j + 1), instance);
-                    double lengthOfChangedEdge1 = PointPair.customerDistSq(t.customers.get(i + 1), t.customers.get(j + 1), instance);
-                    double lengthOfChangedEdge2 = PointPair.customerDistSq(t.customers.get(i), t.customers.get(j), instance);
+                    double lengthOfUnchangedEdge1 = ClarkeWrightPointPair.customerDistSq(t.customers.get(i), t.customers.get(i + 1), instance);
+                    double lengthOfUnchangedEdge2 = ClarkeWrightPointPair.customerDistSq(t.customers.get(j), t.customers.get(j + 1), instance);
+                    double lengthOfChangedEdge1 = ClarkeWrightPointPair.customerDistSq(t.customers.get(i + 1), t.customers.get(j + 1), instance);
+                    double lengthOfChangedEdge2 = ClarkeWrightPointPair.customerDistSq(t.customers.get(i), t.customers.get(j), instance);
                     double lengthDelta = - lengthOfUnchangedEdge1 - lengthOfUnchangedEdge2 + lengthOfChangedEdge1 + lengthOfChangedEdge2;
 
                     if (lengthDelta < 0) {
@@ -27,7 +27,7 @@ public class TwoOptSwap {
         } while (foundImprovement);
     }
 
-    public static void swap(ClarkeWrightTour t, int indexOfBegin, int indexOfEnd) {
+    public static void swap(VehicleTour t, int indexOfBegin, int indexOfEnd) {
         ArrayList<Integer> newRoute = new ArrayList<>();
 
         // adding everything prior to the beginning node (inclusive)
