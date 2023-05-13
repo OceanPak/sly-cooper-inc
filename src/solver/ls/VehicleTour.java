@@ -60,8 +60,8 @@ class VehicleTour {
         return customer == lastStop || customer == firstStop;
     }
 
-    public float getTotalDistance(VRPInstance instance) {
-        float distance = 0;
+    public double getTotalDistance(VRPInstance instance) {
+        double distance = 0;
 
         for (int i = 1; i < customers.size(); i++) {
             distance += ClarkeWrightPointPair.customerDist(customers.get(i), customers.get(i-1), instance);

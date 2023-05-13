@@ -15,11 +15,12 @@ public class AngularBinPackingSolver {
 
     double[] multipliersForAngularDistance = { 10, 7, 3, 2, 1.5, 1.3, 1, 0.9 };
 
-    public AngularBinPackingSolver(VRPInstance instance) {
+    public AngularBinPackingSolver(VRPInstance instance, boolean shouldRandomize) {
         this.instance = instance;
         bins = Stream.generate(() -> new Bin(instance)).limit(instance.numVehicles).toArray(Bin[]::new);
         sortedCustomers = IntStream.range(0, instance.numCustomers).boxed().toArray(Integer[]::new);
         Arrays.sort(sortedCustomers, Comparator.comparingInt(a -> instance.demandOfCustomer[(int) a]).reversed());
+        if (shouldRandomize) ArrayUtils.SlidingWindowShuffle(sortedCustomers, 30, 7);
     }
 
     // Assumes you'll do 2-opt and whatever later on the solutions

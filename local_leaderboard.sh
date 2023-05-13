@@ -2,4 +2,4 @@
 
 rm -f results.log
 sh ./local_compile.sh
-sh ./local_runAll.sh input/ 10 results.log
+sh ./local_runAll.sh input/ 100 results.log

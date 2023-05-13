@@ -1,16 +1,16 @@
-{"Instance": "101_11_2.vrp", "Time": 0.15, "Result": 2548, "Solution": "--"}
-{"Instance": "101_8_1.vrp", "Time": 0.14, "Result": 940, "Solution": "--"}
-{"Instance": "121_7_1.vrp", "Time": 0.14, "Result": 1126, "Solution": "--"}
+{"Instance": "101_11_2.vrp", "Time": 11.90, "Result": 2524.951402347758, "Solution": "--"}
+{"Instance": "101_8_1.vrp", "Time": 12.16, "Result": 886.8715091950612, "Solution": "--"}
+{"Instance": "121_7_1.vrp", "Time": 17.31, "Result": 1113.5153936061042, "Solution": "--"}
 {"Instance": "135_7_1.vrp", "Time": "--", "Result": "--"}
-{"Instance": "151_15_1.vrp", "Time": 0.24, "Result": 4020, "Solution": "--"}
-{"Instance": "16_5_1.vrp", "Time": 0.09, "Result": 367, "Solution": "--"}
-{"Instance": "200_16_2.vrp", "Time": 0.19, "Result": 1496, "Solution": "--"}
-{"Instance": "21_4_1.vrp", "Time": 0.08, "Result": 397, "Solution": "--"}
+{"Instance": "151_15_1.vrp", "Time": 32.30, "Result": 3850.8629054483795, "Solution": "--"}
+{"Instance": "16_5_1.vrp", "Time": 0.59, "Result": 375.21812859798604, "Solution": "--"}
+{"Instance": "200_16_2.vrp", "Time": "--", "Result": "--"}
+{"Instance": "21_4_1.vrp", "Time": 0.87, "Result": 385.4168926185864, "Solution": "--"}
 {"Instance": "241_22_1.vrp", "Time": "--", "Result": "--"}
-{"Instance": "262_25_1.vrp", "Time": 0.24, "Result": 6556, "Solution": "--"}
-{"Instance": "30_4_1.vrp", "Time": 0.09, "Result": 557, "Solution": "--"}
+{"Instance": "262_25_1.vrp", "Time": "--", "Result": "--"}
+{"Instance": "30_4_1.vrp", "Time": 1.18, "Result": 523.677532373307, "Solution": "--"}
 {"Instance": "386_47_1.vrp", "Time": "--", "Result": "--"}
-{"Instance": "41_14_1.vrp", "Time": 0.09, "Result": 1048, "Solution": "--"}
-{"Instance": "45_4_1.vrp", "Time": 0.09, "Result": 831, "Solution": "--"}
-{"Instance": "51_5_1.vrp", "Time": 0.09, "Result": 584, "Solution": "--"}
-{"Instance": "76_8_2.vrp", "Time": 0.11, "Result": 828, "Solution": "--"}
+{"Instance": "41_14_1.vrp", "Time": 1.94, "Result": 1008.1201019582927, "Solution": "--"}
+{"Instance": "45_4_1.vrp", "Time": "--", "Result": "--"}
+{"Instance": "51_5_1.vrp", "Time": 3.50, "Result": 551.2923991256677, "Solution": "--"}
+{"Instance": "76_8_2.vrp", "Time": 6.89, "Result": 799.8867727730076, "Solution": "--"}

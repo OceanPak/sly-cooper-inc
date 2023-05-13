@@ -16,7 +16,7 @@ public class ClarkeWrightSolver {
     HashMap<Integer, VehicleTour> tours = new HashMap<Integer, VehicleTour>();
     ClarkeWrightPointPair[] savings;
 
-    public ClarkeWrightSolver(VRPInstance instance) {
+    public ClarkeWrightSolver(VRPInstance instance, boolean shouldRandomize) {
         this.instance = instance;
         // number of distinct pairs
 
@@ -29,6 +29,7 @@ public class ClarkeWrightSolver {
             }
         }
         Arrays.sort(this.savings, Comparator.reverseOrder());
+       if (shouldRandomize) ArrayUtils.SlidingWindowShuffle(this.savings, 30, 30);
         //System.out.println(Arrays.deepToString(savings));
     }
 

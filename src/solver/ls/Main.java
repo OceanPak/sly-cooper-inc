@@ -11,6 +11,9 @@ import java.util.HashSet;
 import java.util.Iterator;
 
 public class Main {
+
+	static int randomizedAttempts = 50;
+
 	public static void main(String[] args) throws IOException {
 		if (args.length == 0) {
 			System.out.println("Usage: java Main <file>");
@@ -26,37 +29,59 @@ public class Main {
 		watch.start();
 		VRPInstance instance = new VRPInstance(input);
 
-		// ClarkeWrightSolver s = new ClarkeWrightSolver(instance);
-		AngularBinPackingSolver s = new AngularBinPackingSolver(instance);
+		// Just trying multiple times since solvers make use of randomization
+		HashSet<VehicleTour> bestTours = new HashSet<>();
+		double bestDistance = Double.MAX_VALUE;
 
-		HashSet<VehicleTour> tours = s.solve();
+		for (int attempt = 0; attempt < randomizedAttempts; attempt++) {
+			try {
 
-		if (tours.size() > instance.numVehicles) {
+				ClarkeWrightSolver s = new ClarkeWrightSolver(instance, attempt != 0);
+				// AngularBinPackingSolver s = new AngularBinPackingSolver(instance, attempt != 0);
+
+				HashSet<VehicleTour> tours = s.solve();
+
+				if (tours.size() > instance.numVehicles) {
+					System.out.printf(
+							"Attempt aborted - For instance " + input
+									+ ", solver gave us %d vehicles, but %d is the max.\n",
+							tours.size(), instance.numVehicles);
+					continue;
+				}
+
+				// Perform 2 Opt Swap
+				Iterator<VehicleTour> iter = tours.iterator();
+				while (iter.hasNext()) {
+					VehicleTour t = iter.next();
+					TwoOptSwap.checkForSwaps(t, instance);
+				}
+
+				// Perform inter-tour 2 opt swap (then 2 Opt Swap to clean up any changes)
+				TwoOptSwapInterTour.checkForSwaps(new ArrayList<>(tours), instance);
+
+				iter = tours.iterator();
+				while (iter.hasNext()) {
+					VehicleTour t = iter.next();
+					TwoOptSwap.checkForSwaps(t, instance);
+				}
+
+				Double totalDistance = tours.stream().mapToDouble(t -> t.getTotalDistance(instance)).sum();
+
+				if (totalDistance < bestDistance) {
+					bestDistance = totalDistance;
+					bestTours = tours;
+				}
+			} catch (Exception e) {
+				System.out.println(e);
+			}
+		}
+
+		if (bestDistance == Double.MAX_VALUE) {
 			System.out.printf(
-					"Problem! For instance " + input + ", Solver gave us %d vehicles, but %d is the max\n",
-					tours.size(), instance.numVehicles);
+					"Couldn't find a good solution after %d attempts.\n",
+					randomizedAttempts);
+			System.exit(1);
 		}
-
-		// Perform 2 Opt Swap
-		Iterator<VehicleTour> iter = tours.iterator();
-		while (iter.hasNext()) {
-			VehicleTour t = iter.next();
-			TwoOptSwap.checkForSwaps(t, instance);
-		}
-
-		// Perform inter-tour 2 opt swap (then 2 Opt Swap to clean up any changes)
-		TwoOptSwapInterTour.checkForSwaps(new ArrayList<>(tours), instance);
-
-		iter = tours.iterator();
-		while (iter.hasNext()) {
-			VehicleTour t = iter.next();
-			TwoOptSwap.checkForSwaps(t, instance);
-		}
-
-		// Java streams was being annoying, did the naive solution
-		int totalDistance = 0;
-		for (VehicleTour t : tours)
-			totalDistance += t.getTotalDistance(instance);
 
 		Files.createDirectories(Paths.get("./solver_outputs/"));
 		File yourFile = new File("./solver_outputs/" + filename + "output.txt");
@@ -64,9 +89,10 @@ public class Main {
 		yourFile.createNewFile(); // if file already exists will do nothing
 		FileWriter writer = new FileWriter(yourFile);
 
-		//TODO: for trucks that end up not getting tours, we should still make empty tours for htem.
-		writer.write(totalDistance + " 0\n");
-		for (VehicleTour t : tours) {
+		// TODO: for trucks that end up not getting tours, we should still make empty
+		// tours for htem.
+		writer.write(bestDistance + " 0\n");
+		for (VehicleTour t : bestTours) {
 			String pathString = t.customers.stream().reduce(
 					"",
 					// Adding +1 because customer indexes are off by 1; check
@@ -82,7 +108,7 @@ public class Main {
 
 		System.out.println("{\"Instance\": \"" + filename +
 				"\", \"Time\": " + String.format("%.2f", watch.getTime()) +
-				", \"Result\": " + totalDistance +
+				", \"Result\": " + bestDistance +
 				", \"Solution\": \"--\"}");
 	}
 }
