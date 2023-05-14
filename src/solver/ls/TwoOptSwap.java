@@ -20,6 +20,7 @@ public class TwoOptSwap {
 
                     if (lengthDelta < 0) {
                         swap(t, i, j);
+                        // ThreeOptSwap.threeOptSwap(t, instance);
                         foundImprovement = true;
                     }
                 }
@@ -43,5 +44,46 @@ public class TwoOptSwap {
         newRoute.addAll(t.customers.subList(indexOfEnd+1, t.customers.size()));
 
         t.customers = newRoute;
+    }
+
+    public static void fixCrossedDepotEdges(VehicleTour t, VRPInstance i) {
+        // check starting node
+        double startingNodeUnchangedEdges = 0;
+        double startingNodeChangedEdges = 0;
+        double endingNodeUnchangedEdges = 0;
+        double endingNodeChangedEdges = 0;
+
+        int lastIndex = t.customers.size() - 1;
+        if (t.customers.size() > 1) {
+            startingNodeUnchangedEdges = ClarkeWrightPointPair.customerDepotDistSq(t.customers.get(0), i);
+            startingNodeChangedEdges = ClarkeWrightPointPair.customerDepotDistSq(t.customers.get(1), i);
+            endingNodeUnchangedEdges = ClarkeWrightPointPair.customerDepotDistSq(t.customers.get(lastIndex), i);
+            endingNodeChangedEdges = ClarkeWrightPointPair.customerDepotDistSq(t.customers.get(lastIndex - 1), i);
+        } else if (t.customers.size() > 2) {
+            startingNodeUnchangedEdges = ClarkeWrightPointPair.customerDepotDistSq(t.customers.get(0), i) 
+                + ClarkeWrightPointPair.customerDistSq(t.customers.get(0), t.customers.get(1), i) 
+                + ClarkeWrightPointPair.customerDistSq(t.customers.get(1), t.customers.get(2), i);
+            startingNodeChangedEdges = ClarkeWrightPointPair.customerDepotDistSq(t.customers.get(1), i) 
+                + ClarkeWrightPointPair.customerDistSq(t.customers.get(1), t.customers.get(0), i) 
+                + ClarkeWrightPointPair.customerDistSq(t.customers.get(0), t.customers.get(2), i);
+            endingNodeUnchangedEdges = ClarkeWrightPointPair.customerDepotDistSq(t.customers.get(lastIndex), i) 
+                + ClarkeWrightPointPair.customerDistSq(t.customers.get(lastIndex), t.customers.get(lastIndex - 1), i) 
+                + ClarkeWrightPointPair.customerDistSq(t.customers.get(lastIndex - 1), t.customers.get(lastIndex - 2), i);
+            endingNodeChangedEdges = ClarkeWrightPointPair.customerDepotDistSq(t.customers.get(lastIndex - 1), i) 
+                + ClarkeWrightPointPair.customerDistSq(t.customers.get(lastIndex - 1), t.customers.get(lastIndex), i) 
+                + ClarkeWrightPointPair.customerDistSq(t.customers.get(lastIndex), t.customers.get(lastIndex - 2), i);
+        }
+
+        if (startingNodeUnchangedEdges - startingNodeChangedEdges > 0) {
+            int startingNode = t.customers.get(0);
+            t.customers.set(0, t.customers.get(1));
+            t.customers.set(1, startingNode);
+        }
+
+        if (endingNodeUnchangedEdges - endingNodeChangedEdges > 0) {
+            int lastNode = t.customers.get(lastIndex);
+            t.customers.set(lastIndex, t.customers.get(lastIndex - 1));
+            t.customers.set(lastIndex - 1, lastNode);
+        }
     }
 }

@@ -12,7 +12,7 @@ import java.util.Iterator;
 
 public class Main {
 
-	static int randomizedAttempts = 50;
+	static int randomizedAttempts = 30;
 
 	public static void main(String[] args) throws IOException {
 		if (args.length == 0) {
@@ -72,7 +72,7 @@ public class Main {
 					bestTours = tours;
 				}
 			} catch (Exception e) {
-				System.out.println(e);
+				throw e;
 			}
 		}
 
@@ -92,6 +92,7 @@ public class Main {
 		// TODO: for trucks that end up not getting tours, we should still make empty
 		// tours for htem.
 		writer.write(bestDistance + " 0\n");
+		String resultsString = "";
 		for (VehicleTour t : bestTours) {
 			String pathString = t.customers.stream().reduce(
 					"",
@@ -100,6 +101,7 @@ public class Main {
 					(partialPath, customer) -> partialPath + " " + (customer + 1),
 					String::concat);
 			writer.write("0" + pathString + " 0\n");
+			resultsString += "0" + pathString + " 0";
 		}
 
 		writer.close();
@@ -109,6 +111,6 @@ public class Main {
 		System.out.println("{\"Instance\": \"" + filename +
 				"\", \"Time\": " + String.format("%.2f", watch.getTime()) +
 				", \"Result\": " + bestDistance +
-				", \"Solution\": \"--\"}");
+				", \"Solution\": \"+" + resultsString + "+\"}");
 	}
 }

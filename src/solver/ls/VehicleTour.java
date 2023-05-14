@@ -64,17 +64,43 @@ class VehicleTour {
         double distance = 0;
 
         for (int i = 1; i < customers.size(); i++) {
-            distance += ClarkeWrightPointPair.customerDist(customers.get(i), customers.get(i-1), instance);
+            distance += ClarkeWrightPointPair.customerDist(customers.get(i), customers.get(i - 1), instance);
         }
 
         distance += ClarkeWrightPointPair.customerDepotDist(lastStop, instance);
         distance += ClarkeWrightPointPair.customerDepotDist(firstStop, instance);
-    
+
         return distance;
     }
 
-    public int getPartialDemand(int startIndexIncl, int endIndexExcl, VRPInstance i){
-        return customers.subList(startIndexIncl, endIndexExcl).stream().reduce
-        (0, (partialSum, customer) -> partialSum + i.demandOfCustomer[customer]);
+    public void removeCustomer(int customer, VRPInstance instance) {
+        if (customers.size() < 2) {
+            throw new RuntimeException("We're lazy and this tour is too small to remove a customer.");
+        }
+
+        if (customer == lastStop) {
+            lastStop = customers.get(customers.size() - 1);
+        } else if (customer == firstStop) {
+            firstStop = customers.get(1);
+        }
+
+        customers.remove(customers.indexOf(customer));
+        totalDemand -= instance.demandOfCustomer[customer];
+
+    }
+
+    public void addCustomerInternal(int customer, int anchorInternalCustomer, boolean addToRight,
+            VRPInstance instance) {
+        if (addToRight) {
+            customers.add(customers.indexOf(anchorInternalCustomer), customer);
+        } else {
+            customers.add(customers.indexOf(anchorInternalCustomer) - 1, customer);
+        }
+        totalDemand += instance.demandOfCustomer[customer];
+    }
+
+    public int getPartialDemand(int startIndexIncl, int endIndexExcl, VRPInstance i) {
+        return customers.subList(startIndexIncl, endIndexExcl).stream().reduce(0,
+                (partialSum, customer) -> partialSum + i.demandOfCustomer[customer]);
     }
 }
