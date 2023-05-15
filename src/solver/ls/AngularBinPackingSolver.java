@@ -13,7 +13,7 @@ public class AngularBinPackingSolver {
     Bin[] bins;
     Integer[] sortedCustomers;
 
-    double[] multipliersForAngularDistance = { 10, 7, 3, 2, 1.5, 1.3, 1, 0.9 };
+    double[] multipliersForAngularDistance = { 10, 7, 3, 2, 1.5, 1.3, 1, 0.9, 0.3, 0 };
 
     public AngularBinPackingSolver(VRPInstance instance, boolean shouldRandomize) {
         this.instance = instance;
@@ -34,16 +34,16 @@ public class AngularBinPackingSolver {
                     if (bin.canFit(customer, angularMultiplier)) {
                         bin.addCustomer(customer);
                         foundBin = true;
-                        System.out.println(angularMultiplier);
                         break;
                     }
                 }
                 if (foundBin)
                     break;
             }
-            // TODO: improve
-            if (!foundBin)
-                System.out.printf("Error! Didn't find a bin for %d \n", customer + 1);
+
+            if (!foundBin){
+                throw new Error("Error! Didn't find a bin for " + customer + 1 +" \n");
+            }
         }
 
         return new HashSet<VehicleTour>(Arrays.stream(bins).map(bin -> bin.tour).collect(Collectors.toSet()));
@@ -72,7 +72,6 @@ class Bin {
         // [1, 0], smaller distance better
         double distance = 1 - (averageDotProduct + 1) / 2;
 
-        System.out.printf("%.4f dist, so %d -> %.2f \n", distance, instance.demandOfCustomer[customer], instance.demandOfCustomer[customer] * (1 + (angularDistanceMultiplier * distance)));
         return instance.demandOfCustomer[customer] * (1 + (angularDistanceMultiplier * distance)) <= spaceLeft;
     }
 

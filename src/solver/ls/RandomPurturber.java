@@ -2,7 +2,7 @@ package solver.ls;
 
 import java.util.concurrent.ThreadLocalRandom;
 
-//BUGGY >_>
+//BUGGY >_> Wasn't used
 public class RandomPurturber {
 
     static double tolerance = 10;

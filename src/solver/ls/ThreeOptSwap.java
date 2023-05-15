@@ -3,6 +3,7 @@ package solver.ls;
 import java.util.Collections;
 import java.util.ArrayList;
 
+//Didn't help so we didn't use...
 public class ThreeOptSwap {
 
     public static double reverseSegmentIfBetter(VehicleTour tour, int i, int j, int k, VRPInstance instance) {

@@ -1,16 +1,13 @@
 package solver.ls;
 
-import java.util.HashMap;
-import java.util.Map.Entry;
-import java.util.ArrayList;
-
+//We were debugging some transitivity issues with our comparator
+//We didn't end up solving that issue, but the git history has our debugging code
 class ClarkeWrightPointPair implements Comparable<ClarkeWrightPointPair> {
     public int firstCustomer;
     public int secondCustomer;
     public double savings;
     public int combinedDemand;
     public int thresholdDemand;
-    HashMap<String, Integer> debugTable = new HashMap<String, Integer>();
 
     public ClarkeWrightPointPair(int customer1, int customer2, VRPInstance i) {
         this.firstCustomer = customer1;
@@ -25,66 +22,28 @@ class ClarkeWrightPointPair implements Comparable<ClarkeWrightPointPair> {
 
     @Override
     public int compareTo(ClarkeWrightPointPair arg0) {
-        // System.out.printf("current pair %s; arg0 pair %s\n", this.toString(), arg0.toString());
-        // System.out.printf("this.combined demand %d, threshold demand %d, arg0 combined demand %d, arg0 threshold demand %d\n", 
-        //     this.combinedDemand, thresholdDemand, arg0.combinedDemand, arg0.thresholdDemand);
-
-        // 126-323 > 126-359
-        if (this.firstCustomer == 126 - 1 && this.secondCustomer == 323 - 1 && arg0.firstCustomer == 126 - 1 && arg0.secondCustomer == 359 - 1) {
-            ArrayList<String> greaterThan = new ArrayList<>();
-            for (Entry<String, Integer> entry : debugTable.entrySet()) {
-                String[] split = entry.getKey().split(" -> ");
-                if (split[0].equals(this.toString()) && entry.getValue() == -1) {
-                    System.out.printf("case 1: this is greater %s than %s \n", split[1], split[0]);
-                    greaterThan.add(split[1]);
-                } else if (split[1].equals(this.toString()) && entry.getValue() == 1) {
-                    System.out.printf("case 2: this is greater %s than %s \n", split[0], split[1]);
-                }
-            }
-            for (Entry<String, Integer> entry : debugTable.entrySet()) {
-                String[] split = entry.getKey().split(" -> ");
-                if (split[0].equals(arg0.toString()) && split[1].equals(greaterThan.get(0)) && entry.getValue() == 1) {
-                    System.out.println("case 1: it's smaller than 126-359!");
-                } else if (split[0].equals(greaterThan.get(0)) && split[1].equals(arg0.toString()) && entry.getValue() == -1) {
-                    System.out.println("case 2: it's smaller than 126-359!");
-                }
-            }
-        }
-
-        if (this.firstCustomer == 126 - 1 && this.secondCustomer == 324 - 1) {
-            System.out.printf("suspicious edge %s \n", this.toString());
-        }
 
         if (this.combinedDemand >= thresholdDemand && arg0.combinedDemand >= arg0.thresholdDemand) {
-                if (this.combinedDemand < arg0.combinedDemand) {
-                    debugTable.put(this.toString() + " -> " + arg0.toString(), -1);
-                    return -1;
-                }
-                if (this.combinedDemand > arg0.combinedDemand) {
-                    debugTable.put(this.toString() + " -> " + arg0.toString(), 1);
-                    return 1;
-                }
-                debugTable.put(this.toString() + " -> " + arg0.toString(), 0);
-                return 0;
-            } else if (this.combinedDemand < thresholdDemand && arg0.combinedDemand < arg0.thresholdDemand) {
-                if (this.savings < arg0.savings) {
-                    debugTable.put(this.toString() + " -> " + arg0.toString(), -1);
-                    return -1;
-                }
-                if (this.savings > arg0.savings) {
-                    debugTable.put(this.toString() + " -> " + arg0.toString(), 1);
-                    return 1;
-                }
-                debugTable.put(this.toString() + " -> " + arg0.toString(), 0);
-                return 0;
-            } else if (this.combinedDemand > thresholdDemand && arg0.combinedDemand < arg0.thresholdDemand) {
-                debugTable.put(this.toString() + " -> " + arg0.toString(), 1);
-                return 1;
-            } else {
-                debugTable.put(this.toString() + " -> " + arg0.toString(), -1);
+            if (this.combinedDemand < arg0.combinedDemand) {
                 return -1;
             }
-        
+            if (this.combinedDemand > arg0.combinedDemand) {
+                return 1;
+            }
+            return 0;
+        } else if (this.combinedDemand < thresholdDemand && arg0.combinedDemand < arg0.thresholdDemand) {
+            if (this.savings < arg0.savings) {
+                return -1;
+            }
+            if (this.savings > arg0.savings) {
+                return 1;
+            }
+            return 0;
+        } else if (this.combinedDemand > thresholdDemand && arg0.combinedDemand < arg0.thresholdDemand) {
+            return 1;
+        } else {
+            return -1;
+        }
     }
 
     static public double customerDistSq(int c1, int c2, VRPInstance i) {

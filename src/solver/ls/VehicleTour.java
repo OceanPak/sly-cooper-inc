@@ -103,4 +103,14 @@ class VehicleTour {
         return customers.subList(startIndexIncl, endIndexExcl).stream().reduce(0,
                 (partialSum, customer) -> partialSum + i.demandOfCustomer[customer]);
     }
+
+    @Override
+    public String toString() {
+        return customers.stream().reduce(
+					"",
+					// Adding +1 because customer indexes are off by 1; check
+					// ClarkeWrightSolver.java for more info
+					(partialPath, customer) -> partialPath + " " + (customer + 1),
+					String::concat);
+    }
 }

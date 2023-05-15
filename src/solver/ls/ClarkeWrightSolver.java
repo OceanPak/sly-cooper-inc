@@ -18,8 +18,8 @@ public class ClarkeWrightSolver {
 
     public ClarkeWrightSolver(VRPInstance instance, boolean shouldRandomize) {
         this.instance = instance;
-        // number of distinct pairs
 
+        // number of distinct pairs
         this.savings = new ClarkeWrightPointPair[((instance.numCustomers) * (instance.numCustomers - 1)) / 2];
         int pairIndex = 0;
         for (int customer1 = 0; customer1 < instance.numCustomers - 1; customer1++) {
@@ -30,7 +30,6 @@ public class ClarkeWrightSolver {
         }
         Arrays.sort(this.savings, Comparator.reverseOrder());
        if (shouldRandomize) ArrayUtils.SlidingWindowShuffle(this.savings, 30, 30);
-        //System.out.println(Arrays.deepToString(savings));
     }
 
     public HashSet<VehicleTour> solve() {
