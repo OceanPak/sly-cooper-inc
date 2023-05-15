@@ -68,8 +68,8 @@ public class Main {
 		watch.stop();
 		System.out.println("{\"Instance\": \"" + filename +
 				"\", \"Time\": " + String.format("%.2f", watch.getTime()) +
-				", \"Result\": " + solution.distance +
-				", \"Solution\": \"" + resultsString + "\"}");
+				", \"Result\": " + String.format("%.2f", solution.distance) +
+				", \"Solution\": \"" + resultsString.trim() + "\"}");
 	}
 
 	static SolutionHolder solveWithSolver(
